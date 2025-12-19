@@ -243,23 +243,29 @@ operator s op = case op of
 
 -- | Stack management after the evaluation of an n-ary operator.
 opUpdate :: State -> State
-opUpdate s = case accessStack (stack s) (sp s) of
-    Right (StackCell addr) -> case accessHeap (heap s) addr of
-        Right hcell -> case accessStack (stack s) (sp s - 2) of
-            Right (StackCell addr1) -> case saveHeap (heap s) hcell addr1 of
-                Right heap -> case accessStack (stack s) (sp s - 2) of
-                    Right scell -> case accessStack (stack s) (sp s - 1) of
-                        Right scell1 -> case saveStack (stack s) scell1 (sp s - 2) of
-                            Right stack -> case saveStack stack scell (sp s - 1) of
-                                Right (Stack scells) -> s {pc = pc s + 1, sp = sp s - 1, stack = Stack (take (sp s) scells), heap = heap}
-                                Left error           -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-                            Left error             -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-                        Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-                    Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-                Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-            Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-        Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
-    Left error            -> ErrorState $ "Runtime error in 'opUpdate': " ++ error
+opUpdate s =
+  case runUpdate of
+    Right (stack', heap') ->
+      s { pc    = pc s + 1
+        , sp    = sp s - 1
+        , stack = stack'
+        , heap  = heap'
+        }
+    Left err ->
+      ErrorState $ "Runtime error in 'opUpdate': " ++ err
+  where
+    runUpdate :: Either String (Stack, Heap)
+    runUpdate = do
+      StackCell addr  <- accessStack (stack s) (sp s)
+      hcell           <- accessHeap (heap s) addr
+      StackCell addr1 <- accessStack (stack s) (sp s - 2)
+      heap' <- saveHeap (heap s) hcell addr1
+      scell  <- accessStack (stack s) (sp s - 2)
+      scell1 <- accessStack (stack s) (sp s - 1)
+      stack1 <- saveStack (stack s) scell1 (sp s - 2)
+      Stack scells <- saveStack stack1 scell (sp s - 1)
+      let stack' = Stack (take (sp s) scells)
+      pure (stack', heap')
 
 -- | 'pushfun' pushes the heap address of a DEF-cell of a user-defined function on the stack.
 pushfun :: State -> String -> State
