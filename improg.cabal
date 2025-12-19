@@ -1,16 +1,16 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           improg
 version:        0.1.0.0
-description:    Please see the README on GitLab2 at <https://gitlab2.cip.ifi.lmu.de/richard/improg-f>
-homepage:       https://github.com//#readme
-bug-reports:    https://github.com///issues
+synopsis:       Implementation of the functional language F
+homepage:       https://github.com/alexrichrd/ImProg-F#readme
+bug-reports:    https://github.com/alexrichrd/ImProg-F/issues
 author:         S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov
-maintainer:     a.richard@campus.lmu.de
+maintainer:     alexander.richard@gmx.net
 copyright:      2022 S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov
 license:        BSD3
 license-file:   LICENSE
@@ -20,7 +20,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com//
+  location: https://github.com/alexrichrd/ImProg-F
 
 library
   exposed-modules:
@@ -37,10 +37,10 @@ library
   default-extensions:
       NamedFieldPuns
   build-depends:
-      base
+      base >=4.13
   default-language: Haskell2010
 
-executable improg-exe
+executable improg
   main-is: Main.hs
   other-modules:
       Paths_improg
@@ -50,7 +50,7 @@ executable improg-exe
       NamedFieldPuns
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base
+      base >=4.13
     , improg
   default-language: Haskell2010
 
@@ -65,7 +65,7 @@ test-suite improg-test
       NamedFieldPuns
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base
+      base >=4.13
     , improg
     , tasty
     , tasty-hunit

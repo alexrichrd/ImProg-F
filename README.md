@@ -1,84 +1,117 @@
 # ImProg-F
 
-Implementation of the functional programming language 'F' using Haskell. 
-
+Implementation of the functional programming language **F** using Haskell.
 
 ## Motivation
 
-This group project was part of the practical 'Implementierung von Programmiersprachen' at the Ludwig-Maximilians-Universität in Munich, winter semester 2021/22. It introduced the participants to basic principles of formal languages, functional programming, parsing, compiler construction and abstract machines.
+This group project was part of the practical *Implementation of Programming Languages*
+at the Ludwig-Maximilians-Universität in Munich (winter semester 2021/22).
+It introduced the participants to basic principles of formal languages,
+functional programming, parsing, compiler construction, and abstract machines.
 
+## Getting started
 
-##  Getting started
+### Requirements
+- [Haskell Tool Stack](https://docs.haskellstack.org/en/stable/README/) (recommended)
+- [GHC](https://www.haskell.org/downloads/) (only required if building without Stack)
 
-- [GHC](https://www.haskell.org/downloads/) (required)
-- [Haskell Tool Stack](https://docs.haskellstack.org/en/stable/README/) (optional)
+Clone the repository and navigate into it:
 
-
-## Execution with Stack
-
-Navigate into the cloned repository and execute
 ```bash
-stack run
+git clone https://github.com/alexrichrd/ImProg-F.git
+cd ImProg-F
 ```
 
+## Build & execution with Stack
 
-## Highlights
+This project uses Stack with a pinned LTS resolver. Stack will automatically
+download and use a compatible GHC version if necessary.
 
-- Straightforward execution using the Stack build tool
-- Detailed error handling and error messages (see examples in test suite)
-- Flag support for different levels of output verbosity
-- Coherent coding style (based on https://kowainik.github.io/posts/2019-02-06-style-guide)
-- Extensive comments
-- No known bugs
+Build and run the project using:
 
+```bash
+stack build
+stack run improg
+```
 
-## Lowlight
+The interpreter then waits for input from standard input.
 
-This implementation surely is not the most efficient, e.g. O(n) list operations were often used in place of O(1) operations for convenience. 
-Due to the nature of this project, which in our view serves to introduce students to the aforementioned theoretical concepts and not to perform resource intensive calculations, this aspect was deprioritized.
+## Alternative: building with Cabal
 
+If `cabal-install` is available on your system and a compatible GHC version is
+installed, the project can also be built using:
 
-## Usage
+```bash
+cabal build
+cabal run improg
+```
 
-- Every F program must contain a definition 'main = ...;'
-- 'main' is the only (lazily) evaluated expression
+## General Usage
+
+- Every F program must contain a definition `main = ...;`
+- `main` is the only (lazily) evaluated expression
 - Local definitions are possible but restricted to value definitions
-- Numeric values are restricted to integers of range [-2^29, 2^29-1]
-- Division is performed without remainder
-- Boolean values are lowercase
-- Not supported:
-  - Structured or enumerated types (and therefore also no pattern matching)
-  - Lambda expressions and higher-order functions
-  - Tail recursion
-  - Error handling for infinite recursion
+- See the `F_grammar.txt` file for a detailed description of the language
 
+### Example usage
 
+After starting the interpreter with
+
+```bash
+stack run improg
+```
+
+enter an F program directly into the terminal and finish input with an empty line
+(or EOF).
+
+Example: Gauss’s Easter algorithm
+
+```text
+main     = easter year;
+mod a b  = a - ((a / b) * b);
+easter y = let  a = mod y 19;
+                b = mod y 4;
+                c = mod y 7;
+                M = 24;
+                hd = (19 * a) + M;
+                d = mod hd 30;
+                N = 5;
+                he = (2 * b) + (4 * c) + (6 * d) + N;
+                e = mod he 7;
+                res = (22 + d + e)
+                in if (31 < res)
+                    then (((res - 31) * 100) + 4)
+                    else ((res * 100) + 3);
+year     = 2022;
+```
+
+Result:
+
+```text
+1704
+```
+
+### Not supported
+- Structured or enumerated types (and therefore no pattern matching)
+- Lambda expressions and higher-order functions
+- Tail recursion
+- Error handling for infinite recursion
 
 ## Supported flags
 
-- tokens
-- ast
-- instructions
-- states
+- `tokens`
+- `ast`
+- `instructions`
+- `states`
 
-Use flags to print out generated tokens, the abstract syntax tree, 
-MF instructions and intermediate MF states during program execution.
+Use flags to print generated tokens, the abstract syntax tree,
+MF instructions, and intermediate MF states during program execution.
 
 ```bash
-  stack run -- -flagName
+stack run improg -- -flagName
 ```
-
-
-## Authors
-
-- [@hallers](https://gitlab2.cip.ifi.lmu.de/hallers)
-- [@katzo](https://gitlab2.cip.ifi.lmu.de/katzo)
-- [@ljubuncic](https://gitlab2.cip.ifi.lmu.de/ljubuncic)
-- [@richard](https://gitlab2.cip.ifi.lmu.de/richard)
-- [@suslov](https://gitlab2.cip.ifi.lmu.de/suslov)
-
 
 ## References
 
-See the [homepage](https://uni2work.ifi.lmu.de/course/W21/IfI/ImProg) of the practical for more information, including the lecture notes 
-[Übersetzerbau - Abstrakte Maschinen](https://uni2work.ifi.lmu.de/course/W21/IfI/ImProg/file/Skript/download/bry-eisinger-uebersaetzerbau--2004.pdf) on which this project heavily relies.
+See the [homepage](https://uni2work.ifi.lmu.de/course/W21/IfI/ImProg)
+of the practical for more information.

@@ -1,2 +1,9 @@
+# Cabal
+dist-newstyle/
+
+# Stack
 .stack-work/
-*~
+
+# Haskell
+*.hi
+*.o

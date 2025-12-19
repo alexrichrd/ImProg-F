@@ -1,52 +1,53 @@
 name:                improg
 version:             0.1.0.0
-github:              "/"
+github:              alexrichrd/ImProg-F
 license:             BSD3
-author:              "S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov"
-maintainer:          "a.richard@campus.lmu.de"
-copyright:           "2022 S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov"
+author:              S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov
+maintainer:          alexander.richard@gmx.net
+copyright:           2022 S. Haller, O. Katz, L. Ljubuncic, A. Richard, I. Suslov
+
+synopsis:            Implementation of the functional language F
+
 
 extra-source-files:
 - README.md
 
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
-
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitLab2 at <https://gitlab2.cip.ifi.lmu.de/richard/improg-f>
-
 dependencies:
-- base
+- base >= 4.13
 
 default-extensions:
 - NamedFieldPuns
 
 library:
   source-dirs: src
+  exposed-modules:
+    - Compiler
+    - Declarations
+    - MF
+    - Parser
+    - Store
+    - Tokenizer
 
 executables:
-  improg-exe:
-    main:                Main.hs
-    source-dirs:         app
+  improg:
+    main:            Main.hs
+    source-dirs:     app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - improg
+      - improg
 
 tests:
   improg-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main:            Spec.hs
+    source-dirs:     test
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - improg
-    - tasty
-    - tasty-hunit
+      - improg
+      - tasty
+      - tasty-hunit
