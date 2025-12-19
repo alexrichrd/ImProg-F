@@ -8,6 +8,7 @@ import Control.Monad (when, unless)
 import GHC.IO.Encoding (utf8, setLocaleEncoding)
 import System.Environment (getArgs)
 import System.Exit (exitSuccess)
+import System.IO (isEOF)
 
 import Compiler (compileProgram)
 import Declarations (State(ErrorState, code, State))
@@ -27,7 +28,7 @@ main = do
     unless (subset args flags) $ do
         putStrLn "Incorrect flag name. Flag options:\n-tokens\n-ast\n-instructions\n-states\n"
         exitSuccess
-    putStrLn "Please enter an F program and hit enter (end with an empty line):"
+    putStrLn "Please enter an F program and hit enter (finish with empty line or Ctrl-D):"
     input <- getLines
     case tokenize input of
         Right toks -> do
@@ -59,13 +60,17 @@ main = do
             _   -> anotherOne
     -- 'getLines' reads one or more lines as input from the terminal.
     getLines :: IO String
-    getLines = do
-        x <- getLine
-        if x == ""
-            then return []
-            else do
-                xs <- getLines
-                return $ x ++ "\n" ++ xs
+    getLines = go []
+      where
+        go acc = do
+            eof <- isEOF
+            if eof
+                then pure (unlines (reverse acc))
+                else do
+                line <- getLine
+                if null line
+                    then pure (unlines (reverse acc))
+                    else go (line : acc)
     flags = ["-tokens", "-ast", "-instructions", "-states"]
     -- 'subset' checks whether the elements of a given list are all contained in another list.
     subset :: Eq a => [a] -> [a] -> Bool
